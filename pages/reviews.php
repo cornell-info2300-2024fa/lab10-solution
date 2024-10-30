@@ -27,7 +27,7 @@ const RATING_STARS = array(
 );
 
 // retrieve query string parameters for sort
-$sort_param = "TODO: retrieve sort query string parameter";
+$sort_param = $_GET["sort"] ?? NULL;
 
 // CSS classes for sort arrows
 $sort_css_classes = array(
@@ -40,31 +40,31 @@ $sort_css_classes = array(
 // The SQL query parts
 $sql_select_clause = "SELECT products.name AS 'products.name', reviews.rating AS 'reviews.rating', reviews.comment AS 'reviews.comment'
 FROM reviews INNER JOIN products ON (reviews.product_id = products.id)";
-$sql_order_clause = "TODO: default order clause - no order"; // No order by default
+$sql_order_clause = ""; // No order by default
 
 // sort if query string param is new, old, high, or low
 if (in_array($sort_param, array("new", "old", "high", "low"))) {
   $sort_css_classes[$sort_param] = "active";
 
   if ($sort_param == "new") {
-    $sql_sort_field = "TODO: sort by created_at field";
-    $sql_sort_order = "TODO: sort in descending order";
+    $sql_sort_field = "created_at";
+    $sql_sort_order = "DESC";
   } else if ($sort_param == "old") {
-    $sql_sort_field = "TODO: sort by created_at field";
-    $sql_sort_order = "TODO: sort in ascending order";
+    $sql_sort_field = "created_at";
+    $sql_sort_order = "ASC";
   } else if ($sort_param == "high") {
-    $sql_sort_field = "TODO: sort by rating field";
-    $sql_sort_order = "TODO: sort in descending order";
+    $sql_sort_field = "rating";
+    $sql_sort_order = "DESC";
   } else if ($sort_param == "low") {
-    $sql_sort_field = "TODO: sort by rating field";
-    $sql_sort_order = "TODO: sort in ascending order";
+    $sql_sort_field = "rating";
+    $sql_sort_order = "ASC";
   }
 
-  $sql_order_clause = "TODO: concatenate order clause with sort field and order";
+  $sql_order_clause = " ORDER BY " . $sql_sort_field . " " . $sql_sort_order;
 }
 
 // glue select clause to order clause
-$sql_select_query = $sql_select_clause . ";";
+$sql_select_query = $sql_select_clause . $sql_order_clause . ";";
 
 // query DB
 $records = exec_sql_query($db, $sql_select_query)->fetchAll();
@@ -82,13 +82,13 @@ $records = exec_sql_query($db, $sql_select_query)->fetchAll();
 
     <div class="sort">
       Sort by:
-      <a class="<?php echo $sort_css_classes["new"]; ?>" href="TODO: URL with query string to sort by newest reviews">Newest</a>
+      <a class="<?php echo $sort_css_classes["new"]; ?>" href="/reviews?<?php echo http_build_query(array("sort" => "new")); ?>">Newest</a>
       |
-      <a class="<?php echo $sort_css_classes["old"]; ?>" href="TODO: URL with query string to sort by oldest reviews">Oldest</a>
+      <a class="<?php echo $sort_css_classes["old"]; ?>" href="/reviews?<?php echo http_build_query(array("sort" => "old")); ?>">Oldest</a>
       |
-      <a class="<?php echo $sort_css_classes["high"]; ?>" href="TODO: URL with query string to sort by highest rated reviews">Best Rated</a>
+      <a class="<?php echo $sort_css_classes["high"]; ?>" href="/reviews?<?php echo http_build_query(array("sort" => "high")); ?>">Best Rated</a>
       |
-      <a class="<?php echo $sort_css_classes["low"]; ?>" href="TODO: URL with query string to sort by lowest rated reviews">Lowest Rated</a>
+      <a class="<?php echo $sort_css_classes["low"]; ?>" href="/reviews?<?php echo http_build_query(array("sort" => "low")); ?>">Lowest Rated</a>
     </div>
 
     <ul>
